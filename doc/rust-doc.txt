@@ -1,44 +1,44 @@
 *rust-doc.txt*          Search and open Rust documents from Vim.
 
+Author : benknoble <ben.knoble+github@gmail.com>
 Author : rhysd <lin90162@yahoo.co.jp>
-Version : 0.1
+Version : 0.2
 
-CONTENTS                *rust-doc.vim-contents*
+CONTENTS                *rust-doc-contents*
 
-Introduction            |rust-doc.vim-introduction|
-Install                 |rust-doc.vim-install|
-Usage                   |rust-doc.vim-usage|
-Variables               |rust-doc.vim-variables|
-Repository              |rust-doc.vim-repository-page|
-License                 |rust-doc.vim-lisence|
+Introduction            |rust-doc-introduction|
+Install                 |rust-doc-install|
+Usage                   |rust-doc-usage|
+Variables               |rust-doc-variables|
+Repository              |rust-doc-repository-page|
+License                 |rust-doc-lisence|
 
 
 ==============================================================================
-INTRODUCTION                                         *rust-doc.vim-introduction*
+INTRODUCTION                                         *rust-doc-introduction*
 
-*rust-doc.vim* searches documents (standard libraries, libraries your crate
-depends on, and so on) and opens it by browser.  You can use 4 interfaces to
-open them.
+*rust-doc* searches documents (standard libraries, libraries your crate
+depends on, and so on) and opens it by browser.  You can use these interfaces
+to open them.
 
 - |:RustDoc| command for detailed search
-- |K| mapping in your Rust code to search under the cursor
 - |unite.vim| source to list up all candidates and select one
 - |denite.nvim| source to list up all candidates and select one
 
 
 ==============================================================================
-INSTALL                                                   *rust-doc.vim-install*
+INSTALL                                                   *rust-doc-install*
 
 If you use some plugin manager, please follow the instruction of them.
 For example, you can install this plugin with |neobundle.vim| as below.
 >
-    NeoBundle 'rhysd/rust-doc.vim'
+    NeoBundle 'benknoble/rust-doc'
 <
 Otherwise, copy all directories and files in "autoload", "plugin" and "doc"
 directories to your "~/.vim" directory's corresponding directories.
 
 (Optional)
-By default, rust-doc.vim searches documents installed by rustup.  If you want
+By default, rust-doc searches documents installed by rustup.  If you want
 to see your own standard library documents downloaded to elsewhere, you must
 set |g:rust_doc#downloaded_rust_doc_dir|.  The variable should be string type
 and contain the path to downloaded rust documents directory.
@@ -57,14 +57,12 @@ e.g.
 <
 
 ==============================================================================
-USAGE                                                       *rust-doc.vim-usage*
-
-As described above, 4 interfaces are available.
+USAGE                                                       *rust-doc-usage*
 
 ------------------------------------------------------------------------------
-1. |:RustDoc| command
+|:RustDoc| command
 
-    *:RustDoc* {crate-or-module} [{identifier}]            *rust-doc.vim-:RustDoc*
+    *:RustDoc* {crate-or-module} [{identifier}]            *rust-doc-:RustDoc*
 
         You can search the documents with crate name or module
         name with identifier.  Identifier is a name of constant, trait, struct
@@ -87,21 +85,21 @@ As described above, 4 interfaces are available.
         :RustDoc std::vec
 <
 
-    *:RustDocFuzzy* {identifier}                      *rust-doc.vim-:RustDocFuzzy*
+    *:RustDocFuzzy* {identifier}                      *rust-doc-:RustDocFuzzy*
 
-        |rust-doc.vim| searches the documents with {identifier} fuzzily.
+        |rust-doc| searches the documents with {identifier} fuzzily.
         It lists up all possibilities and you can select one of them.  If only
-        one candidate exists, |rust-doc.vim| opens it instantly.
+        one candidate exists, |rust-doc| opens it instantly.
 
         e.g.
 >
         :RustDocFuzzy distributions
 <
 
-    *:RustDocModule* {name}                          *rust-doc.vim-:RustDocModule*
+    *:RustDocModule* {name}                          *rust-doc-:RustDocModule*
 
         It searches the name of modules with {name}.
-        If only one candidate is found, |rust-doc.vim| opens the document
+        If only one candidate is found, |rust-doc| opens the document
         instantly.  Otherwise, it lists up all candidates and you can select
         on of them.
 
@@ -109,18 +107,8 @@ As described above, 4 interfaces are available.
 >
         :RustDocModule std::io
 <
-
 ------------------------------------------------------------------------------
-2. |K| mapping in your Rust code                          *rust-doc.vim-K-mapping*
-
-
-    |rust-doc.vim| automatically overwrites default |K| mapping only in Rust
-    code.  The K mapping opens most corresponding document.  It is available
-    in normal mode and visual mode.  In normal mode, the word under the cursor
-    is used.  In visual mode, the selected text is used.
-
-------------------------------------------------------------------------------
-3. |unite.vim| source                                  *rust-doc.vim-unite-source*
+|unite.vim| source                                  *rust-doc-unite-source*
 
     You can select from all document candidates with unite.vim interface.
 >
@@ -144,7 +132,7 @@ As described above, 4 interfaces are available.
 
 
 ------------------------------------------------------------------------------
-4. |denite.nvim| source                                 *rust-doc.vim-denite-source*
+|denite.nvim| source                                 *rust-doc-denite-source*
 
     You can select from all document candidates with denite.nvim interface.
 >
@@ -167,17 +155,17 @@ As described above, 4 interfaces are available.
 <
 
 ==============================================================================
-VARIABLES                                               *rust-doc.vim-variables*
+VARIABLES                                               *rust-doc-variables*
 
 g:rust_doc#vim_open_cmd                                *g:rust_doc#vim_open_cmd*
 
-Vim command to open the path to a document.  |rust-doc.vim| uses it to open the
+Vim command to open the path to a document.  |rust-doc| uses it to open the
 document if it is not empty.  The command must take a URL to the local file.
 
 
 g:rust_doc#open_cmd                                        *g:rust_doc#open_cmd*
 
-Shell command to open the path to a document.  |rust-doc.vim| uses it to open
+Shell command to open the path to a document.  |rust-doc| uses it to open
 the document if it is not empty.  The command must take a URL to the local
 file.
 
@@ -185,40 +173,35 @@ file.
 g:rust_doc#do_not_ask_for_module_list
                                          *g:rust_doc#do_not_ask_for_module_list*
 
-If the value is 1, |rust-doc.vim|| never ask if it shows the list of
+If the value is 1, |rust-doc|| never ask if it shows the list of
 modules/identifiers when no document is found.
 The default value is 0.
-
-
-g:rust_doc#define_map_K                                *g:rust_doc#define_map_K*
-
-If the value is 1, |K| mappings described above is defined.
-The default value is 1.
 
 
 g:rust_doc#downloaded_rust_doc_dir          *g:rust_doc#downloaded_rust_doc_dir*
 
 Rust tar package contains documents directory "rust-doc".  If you want to
 search the documents in it, you must set the path to the directory to this
-variable.  If the value is not empty, |rust-doc.vim| searches the documents in
+variable.  If the value is not empty, |rust-doc| searches the documents in
 it.  The default value is "".
 
 
 ==============================================================================
-REPOSITORY PAGE                                   *rust-doc.vim-repository-page*
+REPOSITORY PAGE                                   *rust-doc-repository-page*
 
-The repository of |rust-doc.vim| is hosted in GitHub.
+The repository of |rust-doc| is hosted in GitHub.
 
-https://github.com/rhysd/rust-doc.vim
+https://github.com/benknoble/rust-doc
 
 You can also see the screenshots in the repository page.
 
 
 ==============================================================================
-LICENSE                                                   *rust-doc.vim-license*
+LICENSE                                                   *rust-doc-license*
 
-|rust-doc.vim| is distributed under The MIT license.
+|rust-doc| is distributed under The MIT license.
 
+  Copyright (c) 2020 benknoble
   Copyright (c) 2015 rhysd
 
   Permission is hereby granted, free of charge, to any person obtaining

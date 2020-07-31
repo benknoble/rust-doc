@@ -1,7 +1,19 @@
 Open Rust document in Vim
 =========================
 
+[![This project is considered stable](https://img.shields.io/badge/status-stable-success.svg)](https://benknoble.github.io/status/stable/)
+
+[This project is a fork of
+rhysd/rust-doc.vim](https://github.com/rhysd/rust-doc.vim) that exists mostly to
+solve [this issue from 2019](https://github.com/rhysd/rust-doc.vim/issues/4) and
+to provide better defaults (i.e., no remapping `K` when `keywordprg` will do).
+
+I haven't had time to copy-edit all the docs, re-format all the code, etc., so
+it remains mostly in its original state, with my few fixes.
+
 `cargo` has a nice feature to generate document.  But it doesn't have a feature to search it yet.
+`rustup` can search documentation, but you have to know exactly what you're
+looking for.
 This plugin searches documents (standard libraries, libraries your crate depends on, and so on) from Vim.
 
 - Open a document for the word under cursor `std`
@@ -16,7 +28,7 @@ This plugin searches documents (standard libraries, libraries your crate depends
 
 - __`:RustDoc` command__
 
-```
+```vim
 :RustDoc {crate or module name} [{identifier name}]
 ```
 
@@ -30,50 +42,45 @@ All arguments of the command can be completed.  Please enter `<Tab>` to complete
 
 Of course you can search standard libraries.
 
-```
+```vim
 :RustDoc std::vec
 ```
 
 And `:RustDocFuzzy` and `:RustDocModule` are also available.
-Please see [document for them](https://github.com/rhysd/rust-doc.vim/blob/master/doc/rust-doc.txt) for more detail.
+Please see [document for them](https://github.com/rhysd/rust-doc/blob/master/doc/rust-doc.txt) for more detail.
 
+Set the local `keywordprg` to one of these commands in your rust filetype-plugin
+to benefit from `K` for documentation:
 
-- __Mapping `K`__
+```vim
+" .../ftplugin/rust.vim
+setlocal keywordprg=:RustDocFuzzy
 
-Entering key `K` in your Rust source opens a document most corresponding to a word under the cursor.
-
-`K` mapping is available in normal mode and visual mode.  In normal mode, the word under the cursor is used.
-In visual mode, the selected text is used.
-
+```
 
 - __[unite.vim](https://github.com/Shougo/unite.vim) source__
 
-```
+```vim
 :Unite rust/doc
 ```
 
 You can select from all document candidates with unite.vim interface.
-And if you want to use unite.vim for `K` mapping, you can setup in your vimrc as follows.
 
 ```vim
-let g:rust_doc#define_map_K = 0
-augroup vimrc-rust
-    autocmd!
-    autocmd FileType rust nnoremap <buffer><silent>K :<C-u>Unite rust/doc:cursor -no-empty -immediately<CR>
-    autocmd FileType rust vnoremap <buffer><silent>K :Unite rust/doc:visual -no-empty -immediately<CR>
-augroup END
+" .../ftplugin/rust.vim
+nnoremap <buffer> K :Unite rust/doc:cursor -no-empty -immediately<CR>
 ```
 
 It may takes some time to prepare candidates.  If you don't want to wait and it is enough for you to search only module names,
 please specify `modules` to the argument of `rust/doc` source as below.
 
-```
+```vim
 :Unite rust/doc:modules
 ```
 
 - __[denite.nvim](https://github.com/Shougo/denite.nvim) source__
 
-```
+```vim
 :Denite rust/doc
 ```
 
@@ -81,17 +88,14 @@ You can select from all document candidates with denite.nvim interface.
 And if you want to use denite.nvim for `K` mapping, you can setup in your vimrc as follows.
 
 ```vim
-let g:rust_doc#define_map_K = 0
-augroup vimrc-rust
-    autocmd!
-    autocmd FileType rust nnoremap <buffer><silent>K :<C-u>DeniteCursorWord rust/doc<CR>
-augroup END
+" .../ftplugin/rust.vim
+nnoremap <buffer> K :<C-u>DeniteCursorWord rust/doc<CR>
 ```
 
 It may takes some time to prepare candidates.  If you don't want to wait and it is enough for you to search only module names,
 please specify `modules` to the argument of `rust/doc` source as below.
 
-```
+```vim
 :Denite rust/doc:modules
 ```
 
@@ -103,7 +107,7 @@ If you use some plugin manager, please follow the instruction of them.
 For example, you can install this plugin with [neobundle.vim](https://github.com/Shougo/neobundle.vim) as below.
 
 ```vim
-NeoBundle 'rhysd/rust-doc.vim'
+NeoBundle 'benknoble/rust-doc'
 ```
 
 If you use no plugin manager, copy all directories and files in `autoload`, `plugin`, `ftplugin`
@@ -113,8 +117,8 @@ Or you can also use Vim's standard package management. Please read `:help packag
 
 ### 2. (Optional) Setup Standard Library Documents
 
-rust-doc.vim searches documents downloaded by [rustup](https://github.com/rust-lang-nursery/rustup.rs).
-If there is a toolchain installed by rustup, rust-doc.vim tries to use documentations in it.
+rust-doc searches documents downloaded by [rustup](https://github.com/rust-lang-nursery/rustup.rs).
+If there is a toolchain installed by rustup, rust-doc tries to use documentations in it.
 
 If you want to see your own standard library documents, you must set `g:rust_doc#downloaded_rust_doc_dir`.
 The variable should be string type and contain the path to rust documents bundled in downloaded rust tar.
@@ -138,22 +142,18 @@ let g:rust_doc#downloaded_rust_doc_dir = '~/Documents/rust-docs'
 
 - `g:rust_doc#vim_open_cmd`
 
-Vim command to open the path to a document.  rust-doc.vim uses it to open the document if it is not empty.
+Vim command to open the path to a document.  rust-doc uses it to open the document if it is not empty.
 The command must take a url to the local file.
 
 - `g:rust_doc#open_cmd`
 
-Shell command to open the path to a document.  rust-doc.vim uses it to open the document if it is not empty.
+Shell command to open the path to a document.  rust-doc uses it to open the document if it is not empty.
 The command must take a url to the local file.
 
 - `g:rust_doc#do_not_ask_for_module_list`
 
-If the value is `1`, rust-doc.vim never ask if it shows the list of modules/identifiers when no document is found.
+If the value is `1`, rust-doc never ask if it shows the list of modules/identifiers when no document is found.
 The default value is `0`.
-
-- `g:rust_doc#define_map_K`
-
-If the value is `1`, `K` mappings described above is defined. The default value is `1`.
 
 - `g:rust_doc#downloaded_rust_doc_dir`
 
@@ -165,6 +165,7 @@ As described above, the path to directory of rust standard library documents.
 This plugin is distributed under [the MIT License](http://opensource.org/licenses/MIT).
 
 ```
+Copyright (c) 2020 benknoble
 Copyright (c) 2015 rhysd
 ```
 
