@@ -168,11 +168,9 @@ endfunction
 function! rust_doc#get_doc_dirs(hint) abort
     let docs = []
 
-    if g:rust_doc#downloaded_rust_doc_dir !=# ''
-        let d = rust_doc#find_std_doc_dir()
-        if isdirectory(d)
-            let docs += [d]
-        endif
+    let d = rust_doc#find_std_doc_dir()
+    if isdirectory(d)
+      let docs += [d]
     endif
 
     silent let project_root = rust_doc#find_rust_project_dir(a:hint)
